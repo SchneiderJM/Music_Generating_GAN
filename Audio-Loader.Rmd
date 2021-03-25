@@ -1,0 +1,86 @@
+---
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .Rmd
+      format_name: rmarkdown
+      format_version: '1.2'
+      jupytext_version: 1.10.2
+  kernelspec:
+    display_name: Python 3
+    language: python
+    name: python3
+---
+
+# Audio Loader
+
+The purposes of this notebook is to test audio loading and playback with pyaudio and Librosa.
+
+I am testing this on a local copy of Joji's album Ballads 1 that I converted to WAV files. For copyright reasons, these files are listed in the .gitignore file and are not uploaded.
+
+```{python}
+import librosa 
+import os
+#The path to the audio files
+path = os.getcwd()+'\\Joji\\'
+
+#Loads in the first track as a test
+#x is the audio, sr is the sampling rate
+x,sr = librosa.load(path+'01 ATTENTION.mp3.wav')
+
+print(type(x),type(sr))
+```
+
+## Playback
+
+This cell uses IPython to playback the loaded track
+
+```{python}
+import IPython.display as ipd
+
+#ipd.Audio(path+'01 ATTENTION.wav')
+ipd.Audio(x,rate=sr)
+```
+
+## Visualization
+
+Visualizing the waveform
+
+```{python}
+# %matplotlib inline
+import matplotlib.pyplot as plt
+import librosa.display
+
+plt.figure(figsize=(14, 5))
+librosa.display.waveplot(x, sr=sr)
+
+```
+
+## Testing Audio Generation 
+
+This is just some white noise
+
+```{python}
+import numpy as np
+
+testaudio = np.random.rand(1,500000)
+ipd.Audio(testaudio,rate=sr)
+```
+
+This is a flat tone (WARNING high pitched and loud)
+
+```{python}
+testaudio = np.tile([0,0.000005,0.00001],100000)
+ipd.Audio(testaudio,rate=sr)
+```
+
+```{python}
+#Sets it backwards
+ipd.Audio(np.flip(x),rate=sr)
+```
+
+```{python}
+#adds a tiny bit of random noise
+testaudio = x + np.random.normal(-0.01,0.01,[1,len(x)])
+ipd.Audio(testaudio,rate=sr)
+```
